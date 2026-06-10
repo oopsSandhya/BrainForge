@@ -16,6 +16,19 @@ const GAMES = [
   { id: 10, name: "Cognitive Boss Mode", description: "Ultimate brain challenge", skill: "All Skills", icon: "👑", color: "from-yellow-400 to-yellow-600" },
 ];
 
+const gameRoutes = {
+  1: "/games/reflex-rush",
+  2: "/games/memory-sequence",
+  3: "/games/pattern-recall",
+  4: "/games/focus-grid",
+  5: "/games/color-trap",
+  6: "/games/spot-difference",
+  7: "/games/typing-focus",
+  8: "/games/speed-math",
+  9: "/games/daily-challenge",
+  10: "/games/boss-mode",
+};
+
 export default function DashboardPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
@@ -52,8 +65,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
-
-      {/* Navbar */}
       <nav className="bg-gray-900 border-b border-gray-800 px-6 py-4 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <span className="text-2xl">🧠</span>
@@ -61,18 +72,13 @@ export default function DashboardPage() {
         </div>
         <div className="flex items-center gap-4">
           <span className="text-gray-400">Hey, <span className="text-white font-semibold">{stats?.username || user?.username}</span>!</span>
-          <button
-            onClick={handleLogout}
-            className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition"
-          >
+          <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition">
             Logout
           </button>
         </div>
       </nav>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-
-        {/* Stats Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           <StatCard label="Total Sessions" value={stats?.totalSessions ?? 0} icon="🎮" />
           <StatCard label="Total Score" value={stats?.totalScore ?? 0} icon="⭐" />
@@ -80,15 +86,13 @@ export default function DashboardPage() {
           <StatCard label="Current Streak" value={`${stats?.currentStreak ?? 0} days`} icon="🔥" />
         </div>
 
-        {/* Games Section */}
         <h2 className="text-2xl font-bold mb-6">🎯 Choose Your Training</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-10">
           {GAMES.map((game) => (
-            <GameCard key={game.id} game={game} />
+            <GameCard key={game.id} game={game} onPlay={() => navigate(gameRoutes[game.id])} />
           ))}
         </div>
 
-        {/* Recent Activity */}
         <h2 className="text-2xl font-bold mb-4">📈 Recent Activity</h2>
         {stats?.recentActivity?.length === 0 ? (
           <div className="bg-gray-900 rounded-xl p-8 text-center text-gray-400">
@@ -135,7 +139,7 @@ function StatCard({ label, value, icon }) {
   );
 }
 
-function GameCard({ game }) {
+function GameCard({ game, onPlay }) {
   return (
     <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-gray-600 transition cursor-pointer group">
       <div className={`bg-gradient-to-r ${game.color} p-6 flex items-center justify-center`}>
@@ -145,7 +149,9 @@ function GameCard({ game }) {
         <h3 className="font-bold text-white mb-1">{game.name}</h3>
         <p className="text-gray-400 text-sm mb-3">{game.description}</p>
         <span className="text-xs bg-gray-800 text-gray-300 px-2 py-1 rounded-full">{game.skill}</span>
-        <button className="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg text-sm transition group-hover:bg-indigo-500">
+        <button
+          onClick={onPlay}
+          className="w-full mt-3 bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg text-sm transition group-hover:bg-indigo-500">
           Play Now
         </button>
       </div>

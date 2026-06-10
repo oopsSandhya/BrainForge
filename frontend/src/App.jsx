@@ -3,6 +3,7 @@ import { useAuth } from './contexts/AuthContext';
 import LoginPage from './pages/auth/LoginPage';
 import RegisterPage from './pages/auth/RegisterPage';
 import DashboardPage from './pages/dashboard/DashboardPage';
+import ReflexRush from './pages/games/ReflexRush';
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -27,6 +28,11 @@ const App = () => {
                 <Route path="/dashboard" element={
                     <ProtectedRoute>
                         <DashboardPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/games/reflex-rush" element={
+                    <ProtectedRoute>
+                        <ReflexRush />
                     </ProtectedRoute>
                 } />
                 <Route path="/" element={<Navigate to="/login" />} />

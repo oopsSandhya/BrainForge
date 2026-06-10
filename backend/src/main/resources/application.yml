@@ -8,7 +8,7 @@ spring:
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/cognitive_fitness}
     username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASSWORD:postgres}
+    password: Sandhya@1432
     driver-class-name: org.postgresql.Driver
 
   jpa:

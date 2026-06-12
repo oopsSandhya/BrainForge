@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { saveGameSession } from "../../services/sessionService";
 
 const WORDS = [
   "focus", "brain", "speed", "train", "sharp", "quick", "alert", "smart",
@@ -37,11 +38,21 @@ export default function TypingFocus() {
     setCurrentWord(getRandomWord());
     setGameState("playing");
 
-    timerRef.current = setInterval(() => {
+     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
         if (t <= 1) {
           clearInterval(timerRef.current);
           setGameState("finished");
+          const acc = wordsTyped + mistakes > 0
+            ? Math.round((wordsTyped / (wordsTyped + mistakes)) * 100)
+            : 0;
+          saveGameSession({
+            gameSlug: "typing-focus",
+            score,
+            durationMs: GAME_DURATION * 1000,
+            accuracy: acc,
+            metadata: { wordsTyped, mistakes },
+          });
           return 0;
         }
         return t - 1;

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { saveGameSession } from "../../services/sessionService";
 
 const GRID_SIZE = 5;
 const ROUNDS = 5;
@@ -51,10 +52,17 @@ export default function SpotDifference() {
     clearInterval(timerRef.current);
     timerRef.current = setInterval(() => {
       setTimeLeft(t => {
-        if (t <= 1) {
+          if (t <= 1) {
           clearInterval(timerRef.current);
           if (r >= ROUNDS) {
             setGameState("finished");
+            saveGameSession({
+              gameSlug: "spot-difference",
+              score,
+              durationMs: ROUNDS * TIME_PER_ROUND * 1000,
+              accuracy: 0,
+              metadata: { roundsCompleted: r },
+            });
           } else {
             setMessage("Time's up! Next round...");
             setGameState("between");
@@ -85,8 +93,17 @@ export default function SpotDifference() {
         setScore(s => s + points);
         setMessage(`🎉 All found! +${points} points!`);
 
-        if (round >= ROUNDS) {
-          setTimeout(() => setGameState("finished"), 1500);
+         if (round >= ROUNDS) {
+          setTimeout(() => {
+            setGameState("finished");
+            saveGameSession({
+              gameSlug: "spot-difference",
+              score: score + points,
+              durationMs: ROUNDS * TIME_PER_ROUND * 1000,
+              accuracy: 100,
+              metadata: { roundsCompleted: ROUNDS },
+            });
+          }, 1500);
         } else {
           setGameState("between");
           setTimeout(() => {

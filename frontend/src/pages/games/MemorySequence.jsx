@@ -1,6 +1,7 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { saveGameSession } from "../../services/sessionService";
 const COLORS = [
   { id: 0, bg: "bg-red-500", active: "bg-red-300", label: "Red" },
   { id: 1, bg: "bg-blue-500", active: "bg-blue-300", label: "Blue" },
@@ -56,9 +57,16 @@ export default function MemorySequence() {
     const currentIndex = newInput.length - 1;
 
     // Wrong input
-    if (newInput[currentIndex] !== sequence[currentIndex]) {
+      if (newInput[currentIndex] !== sequence[currentIndex]) {
       setMessage("Wrong! ❌ Game Over!");
       setGameState("finished");
+      saveGameSession({
+        gameSlug: "memory-sequence",
+        score,
+        durationMs: 0,
+        accuracy: 0,
+        metadata: { level, maxLevel: MAX_LEVELS },
+      });
       return;
     }
 
@@ -69,8 +77,17 @@ export default function MemorySequence() {
       setMessage(`Correct! +${points} points 🎉`);
       setGameState("result");
 
-      if (level >= MAX_LEVELS) {
-        setTimeout(() => setGameState("finished"), 1500);
+        if (level >= MAX_LEVELS) {
+        setTimeout(() => {
+          setGameState("finished");
+          saveGameSession({
+            gameSlug: "memory-sequence",
+            score: score + points,
+            durationMs: 0,
+            accuracy: 100,
+            metadata: { level, maxLevel: MAX_LEVELS },
+          });
+        }, 1500);
       } else {
         setTimeout(() => {
           setLevel(l => l + 1);

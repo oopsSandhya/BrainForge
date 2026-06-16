@@ -50,7 +50,8 @@ public class DashboardService {
                 .totalScore(totalScore)
                 .averageScore(Math.round(averageScore * 10.0) / 10.0)
                 .averageAccuracy(Math.round(averageAccuracy * 10.0) / 10.0)
-                .currentStreak(0) // Phase 10 will calculate real streak
+                .currentStreak(user.getCurrentStreak())
+                .longestStreak(user.getLongestStreak())
                 .recentActivity(recentActivity)
                 .build();
     }

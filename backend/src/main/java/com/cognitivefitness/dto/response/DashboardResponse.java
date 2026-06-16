@@ -20,6 +20,7 @@ public class DashboardResponse {
     private double averageScore;
     private double averageAccuracy;
     private int currentStreak;
+    private int longestStreak;
     private List<RecentActivity> recentActivity;
 
     @Data

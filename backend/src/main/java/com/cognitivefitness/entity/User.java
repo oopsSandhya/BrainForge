@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,6 +41,14 @@ public class User {
     @Column(nullable = false)
     @Builder.Default
     private Role role = Role.USER;
+
+    @Builder.Default
+    private int currentStreak = 0;
+
+    @Builder.Default
+    private int longestStreak = 0;
+
+    private LocalDate lastPlayedDate;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

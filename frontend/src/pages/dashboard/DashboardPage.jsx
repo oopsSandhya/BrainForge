@@ -35,7 +35,17 @@ export default function DashboardPage() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+ useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await api.get("/api/dashboard/stats");
+        setStats(res.data);
+      } catch (err) {
+        console.error("Failed to fetch stats", err);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchStats();
   }, []);
 
@@ -78,22 +88,41 @@ export default function DashboardPage() {
           >
             📊 Analytics
           </button>
+          <button
+            onClick={() => navigate("/leaderboard")}
+            className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg text-sm transition"
+          >
+            🏆 Leaderboard
+          </button>
           <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm transition">
             Logout
           </button>
-          🏆 Leaderboard
-          <button onClick={() => navigate("/leaderboard")}className="bg-yellow-600 hover:bg-yellow-700 px-4 py-2 rounded-lg text-sm transition"
-         >
-         </button>
         </div>
       </nav>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+
+        {/* STREAK BANNER */}
+        {stats?.currentStreak > 0 && (
+          <div className="mb-6 bg-gradient-to-r from-orange-500/20 to-yellow-500/20 border border-orange-500/30 rounded-xl px-6 py-4 flex items-center gap-4">
+            <span className="text-4xl">🔥</span>
+            <div>
+              <p className="text-white font-bold text-lg">
+                {stats.currentStreak} Day Streak!
+              </p>
+              <p className="text-orange-300 text-sm">
+                Longest streak: {stats.longestStreak} days — Keep it up!
+              </p>
+            </div>
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-10">
           <StatCard label="Total Sessions" value={stats?.totalSessions ?? 0} icon="🎮" />
           <StatCard label="Total Score" value={stats?.totalScore ?? 0} icon="⭐" />
           <StatCard label="Avg Score" value={stats?.averageScore ?? 0} icon="📊" />
-          <StatCard label="Current Streak" value={`${stats?.currentStreak ?? 0} days`} icon="🔥" />
+          <StatCard label="Current Streak" value={`${stats?.currentStreak ?? 0} 🔥`} icon="🔥" />
+          <StatCard label="Longest Streak" value={`${stats?.longestStreak ?? 0} days`} icon="🏅" />
         </div>
 
         <h2 className="text-2xl font-bold mb-6">🎯 Choose Your Training</h2>

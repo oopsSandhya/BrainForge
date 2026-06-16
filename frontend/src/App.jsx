@@ -15,6 +15,7 @@ import DailyChallenge from './pages/games/DailyChallenge';
 import BossMode from './pages/games/BossMode';
 import AnalyticsPage from './pages/analytics/AnalyticsPage';
 import LeaderboardPage from './pages/leaderboard/LeaderboardPage';
+import LandingPage from './pages/landing/LandingPage';
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
 
@@ -100,7 +101,7 @@ const App = () => {
                            <AnalyticsPage />
                       </ProtectedRoute>
                 } />
-                <Route path="/" element={<Navigate to="/login" />} />
+                <Route path="/" element={<LandingPage />} />
             </Routes>
         </BrowserRouter>
     );

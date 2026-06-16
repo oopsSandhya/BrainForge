@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const FEATURES = [
   {
@@ -32,169 +33,248 @@ const GAMES_PREVIEW = [
   { icon: "👑", name: "Boss Mode", skill: "All Skills" },
 ];
 
+function useScrollAnimation() {
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animate-in");
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll(".scroll-animate").forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+}
+
 export default function LandingPage() {
   const navigate = useNavigate();
+  useScrollAnimation();
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
+    <>
+      <style>{`
+        .scroll-animate {
+          opacity: 0;
+          transform: translateY(32px);
+          transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .scroll-animate.animate-in {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        .delay-1 { transition-delay: 0.1s; }
+        .delay-2 { transition-delay: 0.2s; }
+        .delay-3 { transition-delay: 0.3s; }
+        .delay-4 { transition-delay: 0.4s; }
+        .delay-5 { transition-delay: 0.5s; }
 
-      {/* NAVBAR */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xl">🧠</span>
-            <span className="text-lg font-bold text-white">BrainForge</span>
-          </div>
-          <div className="flex items-center gap-1 shrink-0">
-            <button
-              onClick={() => navigate("/login")}
-              className="text-gray-300 hover:text-white px-2 py-1.5 text-xs sm:text-sm transition whitespace-nowrap"
-            >
-              Log In
-            </button>
-            <button
-              onClick={() => navigate("/register")}
-              className="bg-indigo-600 hover:bg-indigo-500 px-2 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition whitespace-nowrap"
-            >
-              Get Started
-            </button>
-          </div>
-        </div>
-      </nav>
+        .card-hover {
+          transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+        }
+        .card-hover:hover {
+          transform: translateY(-4px);
+          box-shadow: 0 8px 32px rgba(99, 102, 241, 0.15);
+          border-color: rgba(99, 102, 241, 0.5);
+        }
 
-      {/* HERO */}
-      <section className="pt-32 pb-20 px-4 text-center">
-        <div className="max-w-3xl mx-auto">
-          <span className="inline-block bg-indigo-900/40 text-indigo-400 text-xs font-medium px-4 py-1.5 rounded-full mb-6 border border-indigo-800">
-            Train smarter. Think faster.
-          </span>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black mb-6 leading-tight">
-            Your brain gets better
-            <span className="text-indigo-400"> with practice.</span>
-          </h1>
-          <p className="text-gray-400 text-base sm:text-xl mb-10 leading-relaxed">
-            BrainForge is a daily brain training platform with 10 skill-based games,
-            personal progress tracking, and a global leaderboard.
-            Five minutes a day is all it takes.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button
-              onClick={() => navigate("/register")}
-              className="bg-indigo-600 hover:bg-indigo-500 px-8 py-4 rounded-xl text-lg font-bold transition"
-            >
-              Start Training — It is Free
-            </button>
-            <button
-              onClick={() => navigate("/login")}
-              className="bg-gray-800 hover:bg-gray-700 px-8 py-4 rounded-xl text-lg font-semibold transition"
-            >
-              Log In
-            </button>
-          </div>
-        </div>
-      </section>
+        .btn-primary {
+          background: linear-gradient(135deg, #4f46e5, #6366f1);
+          transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+        }
+        .btn-primary:hover {
+          transform: translateY(-2px) scale(1.02);
+          box-shadow: 0 8px 24px rgba(99, 102, 241, 0.35);
+          filter: brightness(1.1);
+        }
 
-      {/* STATS BAR */}
-      <section className="border-y border-gray-800 bg-gray-900/50">
-        <div className="max-w-4xl mx-auto px-4 py-8 grid grid-cols-3 gap-4 text-center">
-          <div>
-            <p className="text-2xl sm:text-3xl font-black text-indigo-400">10</p>
-            <p className="text-gray-400 text-xs sm:text-sm mt-1">Brain Games</p>
-          </div>
-          <div>
-            <p className="text-2xl sm:text-3xl font-black text-indigo-400">6</p>
-            <p className="text-gray-400 text-xs sm:text-sm mt-1">Cognitive Skills</p>
-          </div>
-          <div>
-            <p className="text-2xl sm:text-3xl font-black text-indigo-400">5 min</p>
-            <p className="text-gray-400 text-xs sm:text-sm mt-1">Daily Session</p>
-          </div>
-        </div>
-      </section>
+        .btn-secondary {
+          transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .btn-secondary:hover {
+          transform: translateY(-2px) scale(1.02);
+          background: #374151;
+        }
 
-      {/* GAMES PREVIEW */}
-      <section className="py-20 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-black mb-4">10 games. 6 skills.</h2>
-            <p className="text-gray-400 text-base sm:text-lg">
-              Every game is designed to challenge a specific part of how your brain works.
-            </p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
-            {GAMES_PREVIEW.map((game) => (
-              <div
-                key={game.name}
-                className="bg-gray-900 border border-gray-800 rounded-2xl p-4 sm:p-6 hover:border-indigo-700 transition group"
+        .hero-gradient {
+          background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99,102,241,0.12) 0%, transparent 70%);
+        }
+
+        .stat-glow {
+          text-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .gradient-text {
+          background: linear-gradient(135deg, #818cf8, #6366f1);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+      `}</style>
+
+      <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
+
+        {/* NAVBAR */}
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800/60">
+          <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-xl">🧠</span>
+              <span className="text-lg font-bold text-white">BrainForge</span>
+            </div>
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                onClick={() => navigate("/login")}
+                className="text-gray-400 hover:text-white px-3 py-1.5 text-xs sm:text-sm transition-colors whitespace-nowrap"
               >
-                <span className="text-2xl sm:text-3xl mb-3 block">{game.icon}</span>
-                <p className="font-bold text-white text-sm sm:text-lg">{game.name}</p>
-                <p className="text-gray-500 text-xs sm:text-sm mt-1">{game.skill}</p>
+                Log In
+              </button>
+              <button
+                onClick={() => navigate("/register")}
+                className="btn-primary px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-white whitespace-nowrap"
+              >
+                Get Started
+              </button>
+            </div>
+          </div>
+        </nav>
+
+        {/* HERO */}
+        <section className="hero-gradient pt-32 pb-24 px-4 text-center">
+          <div className="max-w-3xl mx-auto">
+            <span className="scroll-animate inline-block bg-indigo-950/60 text-indigo-300 text-xs font-medium px-4 py-1.5 rounded-full mb-6 border border-indigo-800/50">
+              Train smarter. Think faster.
+            </span>
+            <h1 className="scroll-animate delay-1 text-4xl sm:text-5xl md:text-6xl font-black mb-6 leading-tight tracking-tight">
+              Your brain gets better
+              <span className="gradient-text"> with practice.</span>
+            </h1>
+            <p className="scroll-animate delay-2 text-slate-400 text-base sm:text-lg mb-10 leading-relaxed max-w-2xl mx-auto">
+              BrainForge is a daily brain training platform with 10 skill-based games,
+              personal progress tracking, and a global leaderboard.
+              Five minutes a day is all it takes.
+            </p>
+            <div className="scroll-animate delay-3 flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => navigate("/register")}
+                className="btn-primary px-8 py-4 rounded-xl text-base font-bold text-white"
+              >
+                Start Training — It is Free
+              </button>
+              <button
+                onClick={() => navigate("/login")}
+                className="btn-secondary bg-gray-800/80 border border-gray-700/50 px-8 py-4 rounded-xl text-base font-semibold text-gray-200"
+              >
+                Log In
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* STATS BAR */}
+        <section className="border-y border-gray-800/60 bg-gray-900/30">
+          <div className="max-w-4xl mx-auto px-4 py-8 grid grid-cols-3 gap-4 text-center">
+            {[
+              { val: "10", label: "Brain Games" },
+              { val: "6", label: "Cognitive Skills" },
+              { val: "5 min", label: "Daily Session" },
+            ].map((s, i) => (
+              <div key={s.label} className={`scroll-animate delay-${i + 1}`}>
+                <p className="stat-glow text-2xl sm:text-3xl font-black text-indigo-400">{s.val}</p>
+                <p className="text-slate-500 text-xs sm:text-sm mt-1">{s.label}</p>
               </div>
             ))}
           </div>
-          <p className="text-center text-gray-500 text-sm">
-            + 4 more games inside the app
-          </p>
-        </div>
-      </section>
+        </section>
 
-      {/* FEATURES */}
-      <section className="py-20 px-4 bg-gray-900/40 border-y border-gray-800">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-black mb-4">Everything you need to improve.</h2>
-            <p className="text-gray-400 text-base sm:text-lg">
-              Not just games — a complete training system.
+        {/* GAMES PREVIEW */}
+        <section className="py-24 px-4">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-14 scroll-animate">
+              <h2 className="text-3xl sm:text-4xl font-black mb-3 tracking-tight">10 games. 6 skills.</h2>
+              <p className="text-slate-400 text-base sm:text-lg">
+                Every game is designed to challenge a specific part of how your brain works.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-8">
+              {GAMES_PREVIEW.map((game, i) => (
+                <div
+                  key={game.name}
+                  className={`scroll-animate delay-${i + 1} card-hover bg-gray-900/80 border border-gray-800/80 rounded-2xl p-4 sm:p-6 cursor-default`}
+                >
+                  <span className="text-2xl sm:text-3xl mb-3 block">{game.icon}</span>
+                  <p className="font-bold text-white text-sm sm:text-base">{game.name}</p>
+                  <p className="text-slate-500 text-xs sm:text-sm mt-1">{game.skill}</p>
+                </div>
+              ))}
+            </div>
+            <p className="text-center text-slate-600 text-sm scroll-animate">
+              + 4 more games inside the app
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {FEATURES.map((f) => (
-              <div
-                key={f.title}
-                className="bg-gray-900 border border-gray-800 rounded-2xl p-6 hover:border-gray-600 transition"
+        </section>
+
+        {/* FEATURES */}
+        <section className="py-24 px-4 bg-gray-900/20 border-y border-gray-800/60">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-center mb-14 scroll-animate">
+              <h2 className="text-3xl sm:text-4xl font-black mb-3 tracking-tight">Everything you need to improve.</h2>
+              <p className="text-slate-400 text-base sm:text-lg">
+                Not just games — a complete training system.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {FEATURES.map((f, i) => (
+                <div
+                  key={f.title}
+                  className={`scroll-animate delay-${i + 1} card-hover bg-gray-900/80 border border-gray-800/80 rounded-2xl p-6`}
+                >
+                  <span className="text-3xl mb-4 block">{f.icon}</span>
+                  <h3 className="text-base sm:text-lg font-bold mb-2 text-white">{f.title}</h3>
+                  <p className="text-slate-400 leading-relaxed text-sm">{f.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="py-28 px-4 text-center hero-gradient">
+          <div className="max-w-2xl mx-auto">
+            <h2 className="scroll-animate text-3xl sm:text-4xl md:text-5xl font-black mb-5 tracking-tight">
+              Ready to start training?
+            </h2>
+            <p className="scroll-animate delay-1 text-slate-400 text-base sm:text-lg mb-10">
+              Create a free account and play your first game in under a minute.
+            </p>
+            <div className="scroll-animate delay-2">
+              <button
+                onClick={() => navigate("/register")}
+                className="btn-primary px-10 py-4 rounded-xl text-lg font-bold text-white"
               >
-                <span className="text-3xl mb-4 block">{f.icon}</span>
-                <h3 className="text-lg sm:text-xl font-bold mb-2">{f.title}</h3>
-                <p className="text-gray-400 leading-relaxed text-sm sm:text-base">{f.desc}</p>
-              </div>
-            ))}
+                Create Free Account
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA */}
-      <section className="py-24 px-4 text-center">
-        <div className="max-w-2xl mx-auto">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-6">
-            Ready to start training?
-          </h2>
-          <p className="text-gray-400 text-base sm:text-lg mb-10">
-            Create a free account and play your first game in under a minute.
-          </p>
-          <button
-            onClick={() => navigate("/register")}
-            className="bg-indigo-600 hover:bg-indigo-500 px-10 py-5 rounded-xl text-xl font-bold transition"
-          >
-            Create Free Account
-          </button>
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer className="border-t border-gray-800 py-8 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-xl">🧠</span>
-            <span className="font-bold text-white">BrainForge</span>
+        {/* FOOTER */}
+        <footer className="border-t border-gray-800/60 py-8 px-4">
+          <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🧠</span>
+              <span className="font-bold text-white">BrainForge</span>
+            </div>
+            <p className="text-slate-500 text-sm">
+              Built by{" "}
+              <a href="https://github.com/oopsSandhya" target="_blank" rel="noreferrer" className="text-indigo-400 hover:text-indigo-300 transition-colors">Sandhya</a>
+            </p>
           </div>
-          <p className="text-gray-500 text-sm">
-            Built by{" "}
-            <a href="https://github.com/oopsSandhya" target="_blank" rel="noreferrer" className="text-indigo-400 hover:underline">Sandhya</a>
-          </p>
-        </div>
-      </footer>
+        </footer>
 
-    </div>
+      </div>
+    </>
   );
 }

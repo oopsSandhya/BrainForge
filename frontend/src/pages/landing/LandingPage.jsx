@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useTheme } from "../../contexts/ThemeContext";
 
 const FEATURES = [
   {
@@ -52,6 +53,7 @@ function useScrollAnimation() {
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { isDark, setIsDark } = useTheme();
   useScrollAnimation();
 
   return (
@@ -113,21 +115,33 @@ export default function LandingPage() {
           -webkit-text-fill-color: transparent;
           background-clip: text;
         }
+
+        .light-mode {
+          background: #f8fafc !important;
+          color: #0f172a !important;
+        }
       `}</style>
 
-      <div className="min-h-screen bg-gray-950 text-white overflow-x-hidden">
+      <div className={`min-h-screen overflow-x-hidden ${isDark ? "bg-gray-950 text-white" : "bg-slate-50 text-gray-900"}`}>
 
         {/* NAVBAR */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800/60">
+        <nav className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b ${isDark ? "bg-gray-950/80 border-gray-800/60" : "bg-white/80 border-gray-200"}`}>
           <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
             <div className="flex items-center gap-2 shrink-0">
               <span className="text-xl">🧠</span>
-              <span className="text-lg font-bold text-white">BrainForge</span>
+              <span className="text-lg font-bold">BrainForge</span>
             </div>
             <div className="flex items-center gap-1 shrink-0">
               <button
+                onClick={() => setIsDark(!isDark)}
+                className="px-2 py-1.5 text-lg transition hover:scale-110"
+                title="Toggle theme"
+              >
+                {isDark ? "☀️" : "🌙"}
+              </button>
+              <button
                 onClick={() => navigate("/login")}
-                className="text-gray-400 hover:text-white px-3 py-1.5 text-xs sm:text-sm transition-colors whitespace-nowrap"
+                className={`px-3 py-1.5 text-xs sm:text-sm transition whitespace-nowrap ${isDark ? "text-gray-400 hover:text-white" : "text-gray-600 hover:text-gray-900"}`}
               >
                 Log In
               </button>
@@ -144,14 +158,14 @@ export default function LandingPage() {
         {/* HERO */}
         <section className="hero-gradient pt-32 pb-24 px-4 text-center">
           <div className="max-w-3xl mx-auto">
-            <span className="scroll-animate inline-block bg-indigo-950/60 text-indigo-300 text-xs font-medium px-4 py-1.5 rounded-full mb-6 border border-indigo-800/50">
+            <span className={`scroll-animate inline-block text-xs font-medium px-4 py-1.5 rounded-full mb-6 border ${isDark ? "bg-indigo-950/60 text-indigo-300 border-indigo-800/50" : "bg-indigo-50 text-indigo-600 border-indigo-200"}`}>
               Train smarter. Think faster.
             </span>
             <h1 className="scroll-animate delay-1 text-4xl sm:text-5xl md:text-6xl font-black mb-6 leading-tight tracking-tight">
               Your brain gets better
               <span className="gradient-text"> with practice.</span>
             </h1>
-            <p className="scroll-animate delay-2 text-slate-400 text-base sm:text-lg mb-10 leading-relaxed max-w-2xl mx-auto">
+            <p className={`scroll-animate delay-2 text-base sm:text-lg mb-10 leading-relaxed max-w-2xl mx-auto ${isDark ? "text-slate-400" : "text-slate-600"}`}>
               BrainForge is a daily brain training platform with 10 skill-based games,
               personal progress tracking, and a global leaderboard.
               Five minutes a day is all it takes.
@@ -165,7 +179,7 @@ export default function LandingPage() {
               </button>
               <button
                 onClick={() => navigate("/login")}
-                className="btn-secondary bg-gray-800/80 border border-gray-700/50 px-8 py-4 rounded-xl text-base font-semibold text-gray-200"
+                className={`btn-secondary px-8 py-4 rounded-xl text-base font-semibold border ${isDark ? "bg-gray-800/80 border-gray-700/50 text-gray-200" : "bg-white border-gray-200 text-gray-700"}`}
               >
                 Log In
               </button>
@@ -174,7 +188,7 @@ export default function LandingPage() {
         </section>
 
         {/* STATS BAR */}
-        <section className="border-y border-gray-800/60 bg-gray-900/30">
+        <section className={`border-y ${isDark ? "border-gray-800/60 bg-gray-900/30" : "border-gray-200 bg-white/60"}`}>
           <div className="max-w-4xl mx-auto px-4 py-8 grid grid-cols-3 gap-4 text-center">
             {[
               { val: "10", label: "Brain Games" },
@@ -182,8 +196,8 @@ export default function LandingPage() {
               { val: "5 min", label: "Daily Session" },
             ].map((s, i) => (
               <div key={s.label} className={`scroll-animate delay-${i + 1}`}>
-                <p className="stat-glow text-2xl sm:text-3xl font-black text-indigo-400">{s.val}</p>
-                <p className="text-slate-500 text-xs sm:text-sm mt-1">{s.label}</p>
+                <p className="stat-glow text-2xl sm:text-3xl font-black text-indigo-500">{s.val}</p>
+                <p className={`text-xs sm:text-sm mt-1 ${isDark ? "text-slate-500" : "text-slate-400"}`}>{s.label}</p>
               </div>
             ))}
           </div>
@@ -194,7 +208,7 @@ export default function LandingPage() {
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-14 scroll-animate">
               <h2 className="text-3xl sm:text-4xl font-black mb-3 tracking-tight">10 games. 6 skills.</h2>
-              <p className="text-slate-400 text-base sm:text-lg">
+              <p className={`text-base sm:text-lg ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                 Every game is designed to challenge a specific part of how your brain works.
               </p>
             </div>
@@ -202,26 +216,26 @@ export default function LandingPage() {
               {GAMES_PREVIEW.map((game, i) => (
                 <div
                   key={game.name}
-                  className={`scroll-animate delay-${i + 1} card-hover bg-gray-900/80 border border-gray-800/80 rounded-2xl p-4 sm:p-6 cursor-default`}
+                  className={`scroll-animate delay-${i + 1} card-hover rounded-2xl p-4 sm:p-6 cursor-default border ${isDark ? "bg-gray-900/80 border-gray-800/80" : "bg-white border-gray-200"}`}
                 >
                   <span className="text-2xl sm:text-3xl mb-3 block">{game.icon}</span>
-                  <p className="font-bold text-white text-sm sm:text-base">{game.name}</p>
-                  <p className="text-slate-500 text-xs sm:text-sm mt-1">{game.skill}</p>
+                  <p className="font-bold text-sm sm:text-base">{game.name}</p>
+                  <p className={`text-xs sm:text-sm mt-1 ${isDark ? "text-slate-500" : "text-slate-400"}`}>{game.skill}</p>
                 </div>
               ))}
             </div>
-            <p className="text-center text-slate-600 text-sm scroll-animate">
+            <p className={`text-center text-sm scroll-animate ${isDark ? "text-slate-600" : "text-slate-400"}`}>
               + 4 more games inside the app
             </p>
           </div>
         </section>
 
         {/* FEATURES */}
-        <section className="py-24 px-4 bg-gray-900/20 border-y border-gray-800/60">
+        <section className={`py-24 px-4 border-y ${isDark ? "bg-gray-900/20 border-gray-800/60" : "bg-slate-100/60 border-gray-200"}`}>
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-14 scroll-animate">
               <h2 className="text-3xl sm:text-4xl font-black mb-3 tracking-tight">Everything you need to improve.</h2>
-              <p className="text-slate-400 text-base sm:text-lg">
+              <p className={`text-base sm:text-lg ${isDark ? "text-slate-400" : "text-slate-500"}`}>
                 Not just games — a complete training system.
               </p>
             </div>
@@ -229,11 +243,11 @@ export default function LandingPage() {
               {FEATURES.map((f, i) => (
                 <div
                   key={f.title}
-                  className={`scroll-animate delay-${i + 1} card-hover bg-gray-900/80 border border-gray-800/80 rounded-2xl p-6`}
+                  className={`scroll-animate delay-${i + 1} card-hover rounded-2xl p-6 border ${isDark ? "bg-gray-900/80 border-gray-800/80" : "bg-white border-gray-200"}`}
                 >
                   <span className="text-3xl mb-4 block">{f.icon}</span>
-                  <h3 className="text-base sm:text-lg font-bold mb-2 text-white">{f.title}</h3>
-                  <p className="text-slate-400 leading-relaxed text-sm">{f.desc}</p>
+                  <h3 className="text-base sm:text-lg font-bold mb-2">{f.title}</h3>
+                  <p className={`leading-relaxed text-sm ${isDark ? "text-slate-400" : "text-slate-500"}`}>{f.desc}</p>
                 </div>
               ))}
             </div>
@@ -246,7 +260,7 @@ export default function LandingPage() {
             <h2 className="scroll-animate text-3xl sm:text-4xl md:text-5xl font-black mb-5 tracking-tight">
               Ready to start training?
             </h2>
-            <p className="scroll-animate delay-1 text-slate-400 text-base sm:text-lg mb-10">
+            <p className={`scroll-animate delay-1 text-base sm:text-lg mb-10 ${isDark ? "text-slate-400" : "text-slate-500"}`}>
               Create a free account and play your first game in under a minute.
             </p>
             <div className="scroll-animate delay-2">
@@ -261,15 +275,15 @@ export default function LandingPage() {
         </section>
 
         {/* FOOTER */}
-        <footer className="border-t border-gray-800/60 py-8 px-4">
+        <footer className={`border-t py-8 px-4 ${isDark ? "border-gray-800/60" : "border-gray-200"}`}>
           <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
               <span className="text-xl">🧠</span>
-              <span className="font-bold text-white">BrainForge</span>
+              <span className="font-bold">BrainForge</span>
             </div>
-            <p className="text-slate-500 text-sm">
+            <p className={`text-sm ${isDark ? "text-slate-500" : "text-slate-400"}`}>
               Built by{" "}
-              <a href="https://github.com/oopsSandhya" target="_blank" rel="noreferrer" className="text-indigo-400 hover:text-indigo-300 transition-colors">Sandhya</a>
+              <a href="https://github.com/oopsSandhya" target="_blank" rel="noreferrer" className="text-indigo-500 hover:text-indigo-400 transition-colors">Sandhya</a>
             </p>
           </div>
         </footer>

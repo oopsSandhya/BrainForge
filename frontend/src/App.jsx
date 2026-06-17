@@ -16,6 +16,8 @@ import BossMode from './pages/games/BossMode';
 import AnalyticsPage from './pages/analytics/AnalyticsPage';
 import LeaderboardPage from './pages/leaderboard/LeaderboardPage';
 import LandingPage from './pages/landing/LandingPage';
+import ProfilePage from './pages/profile/ProfilePage';
+
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
 
@@ -39,6 +41,11 @@ const App = () => {
                 <Route path="/dashboard" element={
                     <ProtectedRoute>
                         <DashboardPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/profile" element={
+                    <ProtectedRoute>
+                        <ProfilePage />
                     </ProtectedRoute>
                 } />
                 <Route path="/leaderboard" element={

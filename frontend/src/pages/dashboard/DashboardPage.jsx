@@ -33,13 +33,16 @@ export default function DashboardPage() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState(null);
+  const [achievements, setAchievements] = useState([]);
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
+  useEffect(() => {
     const fetchStats = async () => {
       try {
         const res = await api.get("/api/dashboard/stats");
         setStats(res.data);
+        const achRes = await api.get("/api/achievements");
+        setAchievements(achRes.data);
       } catch (err) {
         console.error("Failed to fetch stats", err);
       } finally {
@@ -48,17 +51,6 @@ export default function DashboardPage() {
     };
     fetchStats();
   }, []);
-
-  const fetchStats = async () => {
-    try {
-      const res = await api.get("/api/dashboard/stats");
-      setStats(res.data);
-    } catch (err) {
-      console.error("Failed to fetch stats", err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleLogout = () => {
     logout();
@@ -113,6 +105,22 @@ export default function DashboardPage() {
               <p className="text-orange-300 text-sm">
                 Longest streak: {stats.longestStreak} days — Keep it up!
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* ACHIEVEMENTS */}
+        {achievements.length > 0 && (
+          <div className="mb-10">
+            <h2 className="text-2xl font-bold mb-4">🏅 Achievements</h2>
+            <div className="flex gap-4 overflow-x-auto pb-2">
+              {achievements.map((a) => (
+                <div key={a.id} className="bg-gray-900 border border-gray-800 rounded-xl p-4 min-w-[160px] text-center flex-shrink-0">
+                  <span className="text-3xl block mb-2">{a.icon}</span>
+                  <p className="font-bold text-white text-sm">{a.title}</p>
+                  <p className="text-gray-500 text-xs mt-1">{a.description}</p>
+                </div>
+              ))}
             </div>
           </div>
         )}

@@ -1,5 +1,6 @@
 package com.cognitivefitness.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class Achievement {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @Enumerated(EnumType.STRING)
@@ -33,6 +35,8 @@ public class Achievement {
     private String title;
 
     private String description;
+
+    private String icon;
 
     @CreationTimestamp
     private LocalDateTime earnedAt;

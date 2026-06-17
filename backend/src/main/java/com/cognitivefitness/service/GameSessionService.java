@@ -20,6 +20,7 @@ public class GameSessionService {
     private final GameSessionRepository gameSessionRepository;
     private final UserRepository userRepository;
     private final GameRepository gameRepository;
+    private final AchievementService achievementService;
 
     public GameSession saveSession(String email, SaveSessionRequest request) {
 
@@ -59,6 +60,11 @@ public class GameSessionService {
                 .metadata(request.getMetadata())
                 .build();
 
-        return gameSessionRepository.save(session);
+        GameSession savedSession = gameSessionRepository.save(session);
+
+        // Check and award achievements
+        achievementService.checkAndAwardAchievements(user);
+
+        return savedSession;
     }
 }

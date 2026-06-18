@@ -9,6 +9,7 @@ import com.cognitivefitness.repository.GameRepository;
 import com.cognitivefitness.repository.GameSessionRepository;
 import com.cognitivefitness.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ public class GameSessionService {
     private final GameRepository gameRepository;
     private final AchievementService achievementService;
 
+    @CacheEvict(value = "leaderboard", allEntries = true)
     public GameSession saveSession(String email, SaveSessionRequest request) {
 
         User user = userRepository.findByEmail(email)

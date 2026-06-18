@@ -6,6 +6,7 @@ import com.cognitivefitness.exception.ResourceNotFoundException;
 import com.cognitivefitness.repository.GameSessionRepository;
 import com.cognitivefitness.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -18,6 +19,7 @@ public class LeaderboardService {
     private final GameSessionRepository gameSessionRepository;
     private final UserRepository userRepository;
 
+    @Cacheable(value = "leaderboard", key = "#email")
     public LeaderboardResponse getLeaderboard(String email) {
 
         User currentUser = userRepository.findByEmail(email)

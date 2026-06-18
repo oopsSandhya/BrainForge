@@ -14,6 +14,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -22,6 +25,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
     public AuthResponse register(RegisterRequest request) {
 
@@ -33,24 +37,34 @@ public class AuthService {
             throw new ApiException("Username already taken", HttpStatus.CONFLICT);
         }
 
+        String token = UUID.randomUUID().toString();
+
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .passwordHash(passwordEncoder.encode(request.getPassword()))
                 .role(User.Role.USER)
                 .emailVerified(false)
+                .verificationToken(token)
+                .verificationTokenExpiry(LocalDateTime.now().plusHours(24))
                 .build();
 
         userRepository.save(user);
 
-        String token = jwtProvider.generateToken(user.getEmail());
+        try {
+            emailService.sendVerificationEmail(user.getEmail(), token);
+        } catch (Exception e) {
+            System.err.println("Failed to send verification email: " + e.getMessage());
+        }
+
+        String jwt = jwtProvider.generateToken(user.getEmail());
 
         return AuthResponse.builder()
-                .token(token)
+                .token(jwt)
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .role(user.getRole().name())
-                .message("Registration successful")
+                .message("Registration successful. Please check your email to verify your account.")
                 .build();
     }
 
@@ -75,5 +89,20 @@ public class AuthService {
                 .role(user.getRole().name())
                 .message("Login successful")
                 .build();
+    }
+
+    public String verifyEmail(String token) {
+        User user = userRepository.findByVerificationToken(token)
+                .orElseThrow(() -> new ApiException("Invalid verification link", HttpStatus.BAD_REQUEST));
+
+        if (user.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
+            throw new ApiException("Verification link has expired", HttpStatus.BAD_REQUEST);
+        }
+
+        user.setEmailVerified(true);
+        user.setVerificationToken(null);
+        userRepository.save(user);
+
+        return "Email verified successfully!";
     }
 }

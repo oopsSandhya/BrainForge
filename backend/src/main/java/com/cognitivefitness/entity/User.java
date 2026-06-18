@@ -37,6 +37,10 @@ public class User {
     @Builder.Default
     private boolean emailVerified = false;
 
+    private String verificationToken;
+
+    private LocalDateTime verificationTokenExpiry;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default

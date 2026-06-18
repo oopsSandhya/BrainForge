@@ -1,4 +1,3 @@
-
 server:
   port: 8080
 spring:
@@ -17,9 +16,22 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME:sandhyacgu@gmail.com}
+    password: ${MAIL_PASSWORD:chbispmyfljtbjoc}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 jwt:
   secret: ${JWT_SECRET:mySecretKeyForDevelopmentOnlyPleaseChangeInProduction}
   expiration: ${JWT_EXPIRY_MS:86400000}
+app:
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
 logging:
   level:
     com.cognitivefitness: DEBUG

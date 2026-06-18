@@ -17,6 +17,7 @@ import AnalyticsPage from './pages/analytics/AnalyticsPage';
 import LeaderboardPage from './pages/leaderboard/LeaderboardPage';
 import LandingPage from './pages/landing/LandingPage';
 import ProfilePage from './pages/profile/ProfilePage';
+import VerifyEmailPage from './pages/auth/VerifyEmailPage';
 
 const ProtectedRoute = ({ children }) => {
     const { user, loading } = useAuth();
@@ -38,6 +39,7 @@ const App = () => {
             <Routes>
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                <Route path="/verify-email" element={<VerifyEmailPage />} />
                 <Route path="/dashboard" element={
                     <ProtectedRoute>
                         <DashboardPage />
